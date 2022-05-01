@@ -1,0 +1,42 @@
+from sklearn.preprocessing import OrdinalEncoder
+from sklearn.tree import DecisionTreeClassifier
+import math
+
+if __name__ == '__main__':
+       dataset = [...]
+       encoder = OrdinalEncoder()
+       encoder.fit([row[:-1] for row in dataset])
+
+       procent = int(input())
+       pom = (100 - procent) / 100
+       train_set = dataset[int(pom * len(dataset)):]
+       train_set_x = [train_set[i][:-1] for i in range(0, len(train_set))]
+       train_set_x = encoder.transform(train_set_x)
+       train_set_y = [train_set[i][-1] for i in range(0, len(train_set))]
+
+
+       test_set = dataset[0:int(pom * len(dataset))]
+       test_set_x = [test_set[i][:-1] for i in range(0, len(test_set))]
+       test_set_x = encoder.transform(test_set_x)
+       test_set_y = [test_set[i][-1] for i in range(0, len(test_set))]
+
+       criter = input()
+       classifier = DecisionTreeClassifier(random_state=0, criterion=criter)
+       classifier.fit(train_set_x, train_set_y)
+       print(f'Depth: {classifier.get_depth()}')
+       print(f'Number of leaves: {classifier.get_n_leaves()}')
+
+       correct_samples = 0
+       for x, y in zip(test_set_x, test_set_y):
+              y_predicted = classifier.predict([x])[0]
+              if y == y_predicted:
+                     correct_samples += 1
+
+       accuracy = correct_samples / len(test_set)
+       print(f'Accuracy: {accuracy}')
+
+       feature_importances = list(classifier.feature_importances_)
+       most_important_feature = feature_importances.index(max(feature_importances))
+       print(f'Most important feature: {most_important_feature}')
+       least_important_feature = feature_importances.index(min(feature_importances))
+       print(f'Least important feature: {least_important_feature}')
