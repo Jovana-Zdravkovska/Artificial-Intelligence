@@ -1,0 +1,176 @@
+class Pacman:
+    def __init__(self,info,s):
+        self.mat = [["-","-","-","-","-","-","#","-","#","#"],["-","-","#","#","#","-","-","-","-","#"],
+               ["-","-","-","-","-","-","-","-","-","#"],["-","-","-","-","-","-","#","-","-","#"],
+               ["-","#","-","-","-","#","#","#","-","-"],["-","#","-","-","-","-","#","-","-","-"],
+               ["#","#","#","-","-","-","-","-","-","#"],["-","-","-","-","-","-","-","-","-","-"],
+               ["-","#","-","-","#","-","-","#","#","-"],["-","-","-","-","#","-","-","#","#","-"]]
+        self.initial = info
+        self.goal=s
+        
+    def successor(self,state):
+        x = state[0]
+        y = state[1]
+        sos = state[2]
+        succ = dict ()
+        if(sos=="istok"):
+            if(x<9 and self.mat[x+1][y]!="#"):
+                succ['ProdolzhiPravo']=(x+1,y,'istok')
+                
+            if(x>0 and self.mat[x-1][y]!="#"):
+                succ['ProdolzhiNazad']=(x-1,y,'zapad')
+                
+            if(y<9 and self.mat[x][y+1]!="#"):
+                succ['SvrtiLevo']=(x,y+1,'sever')
+                
+            if(y>0 and self.mat[x][y-1]!="#"):
+                succ['SvrtiDesno']=(x,y-1,'jug')
+                
+        if(sos=="zapad"):
+            if(x>0 and self.mat[x-1][y]!="#"):
+                succ['ProdolzhiPravo']=(x-1,y,'zapad')
+                
+            if(x<9 and self.mat[x+1][y]!="#"):
+                succ['ProdolzhiNazad']=(x+1,y,'istok')
+                
+            if(y>0 and self.mat[x][y-1]!="#"):
+                succ['SvrtiLevo']=(x,y-1,'jug')
+                
+            if(y<9 and self.mat[x][y+1]!="#"):
+                succ['SvrtiDesno']=(x,y+1,'sever')
+                
+        if(sos=="sever"):
+            if(y<9 and self.mat[x][y+1]!="#"):
+                succ['ProdolzhiPravo']=(x,y+1,'sever')
+                
+            if(y>0 and self.mat[x][y-1]!="#"):
+                succ['ProdolzhiNazad']=(x,y-1,'jug')
+                
+            if(x>0 and self.mat[x-1][y]!="#"):
+                succ['SvrtiLevo']=(x-1,y,'zapad')
+                
+            if(x<9 and self.mat[x+1][y]!="#"):
+                succ['SvrtiDesno']=(x+1,y,'istok')
+                
+        if(sos=="jug"):
+            if(y>0 and self.mat[x][y-1]!="#"):
+                succ['ProdolzhiPravo']=(x,y-1,'jug')
+                
+            if(y<9 and self.mat[x][y+1]!="#"):
+                succ['ProdolzhiNazad']=(x,y+1,'sever')
+                
+            if(x<9 and self.mat[x+1][y]!="#"):
+                succ['SvrtiLevo']=(x+1,y,'istok')
+                
+            if(x>0 and self.mat[x-1][y]!="#"):
+                succ['SvrtiDesno']=(x-1,y,'zapad')
+                
+        return succ
+        
+    def action(self,state):
+        return self.successor(state).keys()
+        
+    def result(self, state, action):
+        return self.successor(state)[action]
+        
+    def goal_test(self,state):
+        pozicija=[state[0],state[1]]
+        return pozicija in self.goal
+        
+class Node:
+    def __init__(self, state, parent=None, action=None):
+        self.state = state
+        self.parent = parent
+        self.action = action
+
+    def __repr__(self):
+        return "<Node %s>" % (self.state,)
+
+    def __lt__(self, node):
+        return self.state < node.state
+
+    def expand(self, problem):
+        return [self.child_node(problem, action)
+                for action in problem.actions(self.state)]
+
+    def child_node(self, problem, action):
+        next_state = problem.result(self.state, action)
+        return Node(next_state, self, action)
+
+    def solution(self):
+        return [node.action for node in self.path()[1:]]
+
+    def solve(self):
+        return [node.state for node in self.path()[0:]]
+
+    def path(self):
+        x, result = self, []
+        while x:
+            result.append(x)
+            x = x.parent
+        result.reverse()
+        return result
+    def __eq__(self, other):
+        return isinstance(other, Node) and self.state == other.state
+
+    def __hash__(self):
+        return hash(self.state)    
+        
+class FIFOQueue:
+
+    def __init__(self):
+        self.data = []
+
+    def append(self, item):
+        self.data.append(item)
+
+    def extend(self, items):
+        self.data.extend(items)
+
+    def pop(self):
+        return self.data.pop(0)
+
+    def __len__(self):
+        return len(self.data)
+
+    def __contains__(self, item):
+        return item in self.data
+
+def graph_search(problem, fringe):
+    closed = set()
+    fringe.append(Node(problem.initial))
+    while fringe:
+        node = fringe.pop()
+        if problem.goal_test(node.state):
+            problem.initial=node.state
+            return node
+        if node.state not in closed:
+            closed.add(node.state)
+            fringe.extend(node.expand(problem))
+    return None
+
+def breadth_first_graph_search(problem):
+    return graph_search(problem, FIFOQueue())
+
+
+a=int(input())
+c=int(input())
+d=input()
+e=int(input())
+tock= []
+for i in range(e):
+    f=input()
+    g=f.split(',')
+    tock.append([int(g[0]),int(g[1])])
+b = Pacman((a,c,d),tock)
+if b.goal==[]:
+    print('[]')
+else:
+    j=0
+    resenie = []
+    while j<e:
+        resenie += breadth_first_graph_search(b).solution()
+        b.goal.remove([b.initial[0],b.initial[1]])
+        j+=1
+    print(resenie)
+        
