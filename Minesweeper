@@ -1,0 +1,107 @@
+def sort(N,a,x,y):
+    br = 0
+    if a[x][y]=='#':
+        br='#'
+    else:
+        if x==0 and y==0:
+            if a[x][y+1]=='#':
+                br+=1
+            if a[x+1][y]=='#':
+                br+=1
+            if a[x+1][y+1]=='#':
+                br+=1
+        elif x==0 and y==N-1:
+            if a[x][y-1]=='#':
+                br+=1
+            if a[x+1][y]=='#':
+                br+=1
+            if a[x+1][y-1]=='#':
+                br+=1
+        elif x==N-1 and y==0:
+            if a[x][y+1]=='#':
+                br+=1
+            if a[x-1][y]=='#':
+                br+=1
+            if a[x-1][y+1]=='#':
+                br+=1
+        elif x==N-1 and y==N-1:
+            if a[x][y-1]=='#':
+                br+=1
+            if a[x-1][y]=='#':
+                br+=1
+            if a[x-1][y-1]=='#':
+                br+=1
+        elif x==0 and (y!=0 or y!=N-1):
+            if a[x][y-1]=='#':
+                br+=1 
+            if a[x][y+1]=='#':
+                br+=1 
+            if a[x+1][y]=='#':
+                br+=1 
+            if a[x+1][y-1]=='#':
+                br+=1
+            if a[x+1][y+1]=='#':
+                br+=1 
+        elif y==0 and (x!=0 or x!=N-1):
+            if a[x-1][y]=='#':
+                br+=1 
+            if a[x+1][y]=='#':
+                br+=1 
+            if a[x][y+1]=='#':
+                br+=1 
+            if a[x-1][y+1]=='#':
+                br+=1 
+            if a[x+1][y+1]=='#':
+                br+=1 
+        elif y==N-1 and (x!=0 or x!=N-1):
+            if a[x-1][y]=='#':
+                br+=1 
+            if a[x+1][y]=='#':
+                br+=1 
+            if a[x][y-1]=='#':
+                br+=1 
+            if a[x-1][y-1]=='#':
+                br+=1 
+            if a[x+1][y-1]=='#':
+                br+=1 
+        elif x==N-1 and (y!=0 or y!=N-1):
+            if a[x][y-1]=='#':
+                br+=1 
+            if a[x][y+1]=='#':
+                br+=1 
+            if a[x-1][y]=='#':
+                br+=1 
+            if a[x-1][y-1]=='#':
+                br+=1 
+            if a[x-1][y+1]=='#':
+                br+=1 
+        else:
+            if a[x][y-1]=='#':
+                br+=1 
+            if a[x][y+1]=='#':
+                br+=1 
+            if a[x-1][y]=='#':
+                br+=1 
+            if a[x+1][y]=='#':
+                br+=1 
+            if a[x-1][y-1]=='#':
+                br+=1 
+            if a[x-1][y+1]=='#':
+                br+=1 
+            if a[x+1][y-1]=='#':
+                br+=1 
+            if a[x+1][y+1]=='#':
+                br+=1 
+    return br
+N = int(input())
+mat = [ input() for x in range(N)]
+elem = [mat[x].split() for x in range(N)]
+final = [[sort(N,elem,x,y) for y in range(N)] for x in range(N)]
+for x in range(N):
+    for y in range(N):
+        if y!=N-1:
+            print(final[x][y]," ",end = " ")
+        else:
+            print(final[x][y],end = "")
+    print()
+    
