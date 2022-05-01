@@ -1,0 +1,54 @@
+import warnings
+from sklearn.exceptions import ConvergenceWarning
+from sklearn.neural_network import MLPClassifier
+from  sklearn.preprocessing import MinMaxScaler
+
+data = [...]
+def divide_sets(dataset):
+    M_class = [x for x in dataset if x[-1] == 0]
+    B_class = [x for x in dataset if x[-1] == 1]
+
+    train_set = M_class[:int(len(M_class) * 0.8)] + B_class[:int(len(B_class) * 0.8)]
+    val_set = M_class[int(len(M_class) * 0.8):] + B_class[int(len(B_class) * 0.8):]
+
+    return train_set, val_set
+
+
+if __name__ == '__main__':
+    warnings.filterwarnings('ignore', category=ConvergenceWarning)
+    train_set, val_set = divide_sets(data)
+
+    train_x = [x[:-1] for x in train_set]
+    train_y = [x[-1] for x in train_set]
+    val_x = [x[:-1] for x in val_set]
+    val_y = [x[-1] for x in val_set]
+
+    learning_rate = float(input())
+    epoch_num = int(input())
+    clf = MLPClassifier(6, activation='tanh', learning_rate_init=learning_rate, max_iter=epoch_num, random_state=0)
+    clf.fit(train_x, train_y)
+
+    predicted_correct = 0
+    val_predictions = clf.predict(val_x)
+    for true, pred in zip(val_y, val_predictions):
+        if true == pred:
+            predicted_correct += 1
+
+    acc = predicted_correct/len(val_set)
+
+    predicted_correct1 = 0
+    train_predictions = clf.predict(train_x)
+    for true, pred in zip(train_y, train_predictions):
+        if true == pred:
+            predicted_correct1 += 1
+
+    acc1 = predicted_correct1 / len(train_set)
+
+    var = acc + acc1*0.15
+    if var < acc1:
+        print('Se sluchuva overfitting')
+    else:
+        print('Ne se sluchuva overfitting')
+        
+    print(f'Tochnost so trenirachko mnozhestvo: {acc1}')
+    print(f'Tochnost so validacisko mnozhestvo: {acc}')
