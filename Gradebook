@@ -1,0 +1,69 @@
+import copy
+def zero_to_infinity():
+    i = 0
+    while True:
+        yield i
+        i += 1
+student = {}
+for x in zero_to_infinity():
+    r = input()
+    if r=="end":
+        break
+    separate_list = r.split(",")
+    name = separate_list[0]
+    lastname = separate_list[1]
+    index = int(separate_list[2])
+    subject = separate_list[3]
+    teorija = int(separate_list[4])
+    zadaci = int(separate_list[5])
+    labs = int(separate_list[6])
+    
+    poeni = teorija + zadaci + labs
+    if poeni<=50:
+        ocena = 5
+    elif poeni>50 and poeni<=60:
+        ocena = 6
+    elif poeni>60 and poeni<=70:
+        ocena = 7
+    elif poeni>70 and poeni<=80:
+        ocena = 8
+    elif poeni>80 and poeni<=90:
+        ocena = 9
+    elif poeni>90 and poeni<=100:
+        ocena = 10
+        
+    num_f=0
+    if x == 0:
+        student[x] = { 'Student' : name + " " + lastname, 'ind' : index, 'predmet' : { num_f : subject + ":", num_f+1 : ocena}}
+    else:
+        for num in range(x):
+            if index == student[num]['ind']:
+                num_f=len(student[num]['predmet'].keys())
+                student[num]['predmet'][num_f] = subject + ":"
+                student[num]['predmet'][num_f+1] = ocena
+        else:
+            student[x] = { 'Student' : name + " " + lastname, 'ind' : index, 'predmet' : { num_f : subject + ":", num_f+1 : ocena}}
+
+students=copy.deepcopy(student)
+b = 0
+for x in student:
+    y=0
+    y+=b
+    while y<x:
+        if student[y]['ind']==student[x]['ind']:
+            del students[x]
+            b+=1
+            break
+        else:
+            pass
+        y+=1
+
+
+for x in students:
+    print("Student:",students[x]['Student'])
+    for y in students[x]['predmet']:
+        if y%2==0:
+            print("	"+students[x]['predmet'][y],students[x]['predmet'][y+1])
+        else:
+            pass
+    print("")
