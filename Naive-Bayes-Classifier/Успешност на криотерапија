@@ -1,0 +1,33 @@
+from sklearn.naive_bayes import GaussianNB
+import math
+
+if __name__ == '__main__':
+
+    dataset = [...]
+    dataset = [[float(dataset[i][j]) for j in range(0, len(dataset[i]))] for i in range(0, len(dataset))]
+for row in dataset:
+    row[-1] = int(row[-1])
+
+train_set = dataset[0:math.ceil(0.85*len(dataset))]
+test_set = dataset[math.ceil(0.85*len(dataset)):]
+
+X = [train_set[i][:-1] for i in range(0, len(train_set))]
+Y = [train_set[i][-1] for i in range(0, len(train_set))]
+
+clf = GaussianNB()
+clf.fit(X, Y)
+
+accuracy = 0
+for row in test_set:
+    predict = clf.predict([row[:-1]])
+    if predict[0] == row[-1]:
+        accuracy += 1
+print(accuracy/len(test_set))
+
+vlez = [float(el) for el in input().split(' ')]
+temp = clf.predict([vlez])
+strings = [str(integer) for integer in temp]
+a_string = "". join(strings)
+an_integer = int(a_string)
+print(an_integer)
+print(clf.predict_proba([vlez]))
